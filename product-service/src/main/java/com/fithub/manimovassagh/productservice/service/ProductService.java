@@ -15,11 +15,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ProductService {
+public class ProductService implements ProductServiceInterface {
 
     private final ProductRepository productRepository;
 
 
+    @Override
     public void createProduct(ProductRequest productRequest) {
         Product product = Product.builder()
                 .name(productRequest.getName())
@@ -29,16 +30,18 @@ public class ProductService {
         log.info("Product {} Successfully created", product.getId());
     }
 
+    @Override
     public List<ProductResponse> getAllProducts() {
         List<Product> products = productRepository.findAll();
          return products.stream().map(this::mapToProductResponse).toList();
     }
 
-    private ProductResponse mapToProductResponse(Product product) {
+    public ProductResponse mapToProductResponse(Product product) {
         return ProductResponse.builder().id(product.getId())
                 .name(product.getName())
                 .description(product.getDescription())
                 .price(product.getPrice())
                 .build();
     }
+
 }
