@@ -1,15 +1,15 @@
 package com.github.manimovassagh.orderservice.dto;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class OrderLineItemsDto {
     private Long id;
     private String skuCode;
