@@ -5,28 +5,33 @@ import com.github.manimovassagh.orderservice.dto.OrderLineItemsDto;
 import com.github.manimovassagh.orderservice.dto.OrderRequest;
 import com.github.manimovassagh.orderservice.model.Order;
 import com.github.manimovassagh.orderservice.model.OrderLineItems;
+import com.github.manimovassagh.orderservice.repository.OrderRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
 
+    private final OrderRepository orderRepository;
 
     public void placeOrder(OrderRequest orderRequest) {
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
-        orderRequest.getOrderLineItemsList().stream().map(orderLineItemsDto -> {
-            mapToDto(orderLineItemsDto);
-        })
-
+        List<OrderLineItems> orderLineItems = orderRequest.getOrderLineItemsList().stream().map(this::mapToDto).toList();
+        order.setOrderLineItemsList(orderLineItems);
+        orderRepository.save(order);
     }
 
-    private void mapToDto(OrderLineItemsDto orderLineItemsDto) {
+    private OrderLineItems mapToDto(OrderLineItemsDto orderLineItemsDto) {
         OrderLineItems orderLineItems = new OrderLineItems();
         orderLineItems.setPrice(orderLineItemsDto.getPrice());
         orderLineItems.setQuantity(orderLineItemsDto.getQuantity());
         orderLineItems.setSkuCode(orderLineItemsDto.getSkuCode());
+        return orderLineItems;
     }
 
 }
